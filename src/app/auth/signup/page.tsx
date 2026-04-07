@@ -103,28 +103,34 @@ function SignupForm() {
 
           <form onSubmit={handleSignup} className="space-y-4 mt-6">
             <div>
-              <label className="text-[10px] tracking-wider text-cream/30 uppercase block mb-1.5">
+              <label htmlFor="signup-email" className="text-[10px] tracking-wider text-cream/30 uppercase block mb-1.5">
                 Email
               </label>
               <input
+                id="signup-email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-forest-light border border-white/10 text-cream px-4 py-3 text-sm placeholder:text-cream/20 focus:border-copper/40 focus:outline-none transition-colors"
+                className="w-full bg-forest-light border border-white/10 text-cream px-4 py-3 text-sm placeholder:text-cream/20 focus:border-copper/40 focus:outline-none focus:ring-1 focus:ring-copper/30 transition-colors"
                 placeholder="you@company.com"
                 required
               />
             </div>
 
             <div>
-              <label className="text-[10px] tracking-wider text-cream/30 uppercase block mb-1.5">
+              <label htmlFor="signup-password" className="text-[10px] tracking-wider text-cream/30 uppercase block mb-1.5">
                 Password
               </label>
               <input
+                id="signup-password"
+                name="password"
                 type="password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-forest-light border border-white/10 text-cream px-4 py-3 text-sm placeholder:text-cream/20 focus:border-copper/40 focus:outline-none transition-colors"
+                className="w-full bg-forest-light border border-white/10 text-cream px-4 py-3 text-sm placeholder:text-cream/20 focus:border-copper/40 focus:outline-none focus:ring-1 focus:ring-copper/30 transition-colors"
                 placeholder="Min. 8 characters"
                 minLength={8}
                 required

@@ -4,8 +4,15 @@ import { getStripe, PLANS } from "@/lib/stripe";
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    let supabase;
+    let user;
+    try {
+      supabase = createServerSupabaseClient();
+      const { data } = await supabase.auth.getUser();
+      user = data.user;
+    } catch {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

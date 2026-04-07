@@ -109,8 +109,15 @@ Focus on: why this parcel scores high, what signals indicate rezoning potential,
 export async function POST(request: NextRequest) {
   try {
     // Auth & plan check
-    const supabase = createServerSupabaseClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    let supabase;
+    let user;
+    try {
+      supabase = createServerSupabaseClient();
+      const { data } = await supabase.auth.getUser();
+      user = data.user;
+    } catch {
+      return NextResponse.json({ error: "Auth service unavailable" }, { status: 503 });
+    }
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

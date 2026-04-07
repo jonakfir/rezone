@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const plans = [
   {
@@ -58,20 +59,34 @@ const plans = [
 ];
 
 export default function PricingSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.05, rootMargin: "100px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="pricing" className="py-24 px-6">
+    <section id="pricing" className="py-24 px-6" ref={ref}>
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
           <h2 className="font-editorial text-4xl md:text-5xl mb-4">
             Precision tools,{" "}
             <span className="text-copper">clear pricing</span>
           </h2>
-          <p className="text-cream/50 max-w-lg mx-auto">
+          <p className="text-cream/60 max-w-lg mx-auto">
             No hidden fees. Cancel anytime. Start with a free county scan.
           </p>
         </motion.div>
@@ -81,13 +96,12 @@ export default function PricingSection() {
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
               className={`relative p-6 border ${
                 plan.highlight
                   ? "border-copper/40 bg-copper/5"
-                  : "border-white/5 bg-forest-light/50"
+                  : "border-white/10 bg-forest-light/50"
               }`}
             >
               {plan.highlight && (
@@ -98,17 +112,17 @@ export default function PricingSection() {
 
               <div className="mb-6">
                 <h3 className="font-editorial text-xl mb-1">{plan.name}</h3>
-                <p className="text-cream/40 text-sm">{plan.description}</p>
+                <p className="text-cream/60 text-sm">{plan.description}</p>
               </div>
 
               <div className="mb-6">
                 <span className="font-editorial text-4xl">{plan.price}</span>
-                <span className="text-cream/40 text-sm">{plan.period}</span>
+                <span className="text-cream/60 text-sm">{plan.period}</span>
               </div>
 
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm text-cream/70">
+                  <li key={feature} className="flex items-center gap-3 text-sm text-cream/80">
                     <Check size={14} className="text-teal flex-shrink-0" />
                     {feature}
                   </li>
@@ -120,7 +134,7 @@ export default function PricingSection() {
                 className={`flex items-center justify-center gap-2 w-full py-3 font-semibold text-sm tracking-wide transition-all ${
                   plan.highlight
                     ? "bg-copper text-white hover:bg-copper-dark"
-                    : "border border-white/10 text-cream/80 hover:border-copper/40 hover:text-copper"
+                    : "border border-white/20 text-cream/80 hover:border-copper/40 hover:text-copper"
                 }`}
               >
                 {plan.cta}
