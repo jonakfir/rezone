@@ -5,8 +5,10 @@ import { DEMO_PARCELS, DEMO_MAP_CENTER, DEMO_MAP_ZOOM } from "@/lib/sample-data"
 import type { Parcel } from "@/types/database";
 import MapSidebar from "@/components/MapSidebar";
 import ParcelCard from "@/components/ParcelCard";
+import { useUser } from "@/lib/auth/user-context";
 
 export default function MapPage() {
+  const user = useUser();
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
@@ -213,6 +215,7 @@ export default function MapPage() {
             <ParcelCard
               parcel={selectedParcel}
               onClose={() => setSelectedParcel(null)}
+              userPlan={user.plan}
             />
           </div>
         )}

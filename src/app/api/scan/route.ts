@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { getUserPlanWithAdminOverride } from "@/lib/auth/admin";
+import { getMaxCounties } from "@/lib/auth/plan-gates";
+import type { Profile } from "@/types/database";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -104,6 +108,44 @@ Focus on: why this parcel scores high, what signals indicate rezoning potential,
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth & plan check
+    const supabase = createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    const fallbackProfile: Profile = {
+      id: user.id,
+      email: user.email || "",
+      stripe_customer_id: null,
+      plan: "free",
+      created_at: new Date().toISOString(),
+    };
+
+    const { plan } = getUserPlanWithAdminOverride(profile || fallbackProfile);
+    const maxCounties = getMaxCounties(plan);
+
+    // Check county usage
+    const { count } = await supabase
+      .from("user_counties")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    if ((count || 0) >= maxCounties) {
+      return NextResponse.json(
+        { error: `Your ${plan} plan allows ${maxCounties} county scan${maxCounties === 1 ? "" : "s"}. Upgrade for more.` },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { county_fips } = body;
 

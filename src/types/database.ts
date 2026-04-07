@@ -42,6 +42,7 @@ export interface Profile {
   email: string;
   stripe_customer_id: string | null;
   plan: "free" | "pro" | "institutional";
+  is_admin?: boolean;
   created_at: string;
 }
 

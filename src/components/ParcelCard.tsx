@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { X, MapPin, User, Maximize2, Tag, DollarSign, Brain, Clock } from "lucide-react";
-import type { Parcel } from "@/types/database";
+import type { Parcel, Profile } from "@/types/database";
+import { canAccessFeature } from "@/lib/auth/plan-gates";
+import UpgradePrompt from "@/components/UpgradePrompt";
 
 function ScoreBadge({ score }: { score: number }) {
   const color =
@@ -23,9 +25,11 @@ function ScoreBadge({ score }: { score: number }) {
 export default function ParcelCard({
   parcel,
   onClose,
+  userPlan = "free",
 }: {
   parcel: Parcel;
   onClose: () => void;
+  userPlan?: Profile["plan"];
 }) {
   return (
     <motion.div
@@ -73,7 +77,11 @@ export default function ParcelCard({
               AI Analysis
             </span>
           </div>
-          <p className="text-sm text-cream/70 leading-relaxed">{parcel.ai_summary}</p>
+          {canAccessFeature(userPlan, "ai_summaries") ? (
+            <p className="text-sm text-cream/70 leading-relaxed">{parcel.ai_summary}</p>
+          ) : (
+            <UpgradePrompt feature="AI-powered rezoning opportunity summaries" requiredPlan="pro" />
+          )}
         </div>
       )}
 
@@ -86,6 +94,9 @@ export default function ParcelCard({
               Permit Timeline
             </span>
           </div>
+          {!canAccessFeature(userPlan, "permit_timeline") ? (
+            <UpgradePrompt feature="Full permit history timeline" requiredPlan="pro" />
+          ) : (
           <div className="space-y-3">
             {parcel.permit_history.map((permit, i) => (
               <div key={i} className="flex gap-3">
@@ -118,6 +129,7 @@ export default function ParcelCard({
               </div>
             ))}
           </div>
+          )}
         </div>
       )}
     </motion.div>

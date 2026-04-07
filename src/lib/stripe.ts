@@ -34,7 +34,7 @@ export const PLANS = {
   },
   pro: {
     name: "Pro",
-    price: 99,
+    price: 49,
     priceId: process.env.STRIPE_PRO_PRICE_ID,
     counties: 5,
     frequency: "daily",

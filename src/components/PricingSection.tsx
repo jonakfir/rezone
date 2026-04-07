@@ -22,7 +22,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "$99",
+    price: "$49",
     period: "/month",
     description: "For active investors and developers",
     features: [

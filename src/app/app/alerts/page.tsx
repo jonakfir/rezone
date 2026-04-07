@@ -9,9 +9,13 @@ import {
   Trash2,
   Pencil,
   Plus,
+  Lock,
   ToggleLeft,
   ToggleRight,
 } from "lucide-react";
+import { useUser } from "@/lib/auth/user-context";
+import { getMaxAlerts, getAllowedFrequencies } from "@/lib/auth/plan-gates";
+import UpgradePrompt from "@/components/UpgradePrompt";
 
 interface Alert {
   id: string;
@@ -58,7 +62,11 @@ const DEMO_ALERTS: Alert[] = [
 ];
 
 export default function AlertsPage() {
+  const user = useUser();
+  const maxAlerts = getMaxAlerts(user.plan);
+  const allowedFreqs = getAllowedFrequencies(user.plan);
   const [alerts, setAlerts] = useState(DEMO_ALERTS);
+  const atLimit = alerts.length >= maxAlerts;
 
   function toggleAlert(id: string) {
     setAlerts((prev) =>
@@ -81,9 +89,13 @@ export default function AlertsPage() {
               Get notified when new rezoning opportunities match your criteria.
             </p>
           </div>
-          <button className="btn-primary flex items-center gap-2 text-sm">
-            <Plus size={14} />
-            New Alert
+          <button
+            className={`btn-primary flex items-center gap-2 text-sm ${atLimit ? "opacity-50 cursor-not-allowed" : ""}`}
+            disabled={atLimit}
+            title={atLimit ? `${user.plan === "free" ? "Free" : "Pro"} plan limited to ${maxAlerts} alert${maxAlerts === 1 ? "" : "s"}` : undefined}
+          >
+            {atLimit ? <Lock size={14} /> : <Plus size={14} />}
+            {atLimit ? "Alert limit reached" : "New Alert"}
           </button>
         </div>
 
@@ -109,7 +121,7 @@ export default function AlertsPage() {
                       {alert.county}, {alert.state}
                     </h3>
                     <span
-                      className={`text-[10px] px-2 py-0.5 tracking-wider font-mono uppercase ${
+                      className={`text-[10px] px-2 py-0.5 tracking-wider font-mono uppercase inline-flex items-center gap-1 ${
                         alert.frequency === "realtime"
                           ? "bg-copper/10 text-copper border border-copper/20"
                           : alert.frequency === "daily"
@@ -117,6 +129,7 @@ export default function AlertsPage() {
                           : "bg-white/5 text-cream/50 border border-white/10"
                       }`}
                     >
+                      {!allowedFreqs.includes(alert.frequency) && <Lock size={9} />}
                       {alert.frequency}
                     </span>
                   </div>
@@ -168,6 +181,13 @@ export default function AlertsPage() {
               </div>
             </motion.div>
           ))}
+
+          {atLimit && user.plan !== "institutional" && (
+            <UpgradePrompt
+              feature={`Upgrade to monitor more counties with ${user.plan === "free" ? "daily and " : ""}real-time alerts`}
+              requiredPlan={user.plan === "free" ? "pro" : "institutional"}
+            />
+          )}
 
           {alerts.length === 0 && (
             <div className="text-center py-16">
