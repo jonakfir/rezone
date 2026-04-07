@@ -7,13 +7,14 @@ const PLAN_RANK: Record<Profile["plan"], number> = {
 };
 
 export const FEATURE_GATES = {
-  ai_summaries: { requiredPlan: "pro" as const, label: "AI Analysis", description: "AI-powered rezoning opportunity summaries for each parcel" },
+  ai_summaries: { requiredPlan: "pro" as const, label: "Unlimited AI Analysis", description: "Unlimited AI-powered rezoning opportunity summaries" },
   permit_timeline: { requiredPlan: "pro" as const, label: "Permit Timeline", description: "Full permit history timeline for each parcel" },
   sales_comps: { requiredPlan: "pro" as const, label: "Sales Comps", description: "Nearby sales comparisons and pricing data" },
   daily_alerts: { requiredPlan: "pro" as const, label: "Daily Alerts", description: "Daily email alerts for new opportunities" },
-  multi_county: { requiredPlan: "pro" as const, label: "Multiple Counties", description: "Monitor up to 5 counties simultaneously" },
+  csv_export: { requiredPlan: "pro" as const, label: "CSV Export", description: "Export parcel data as CSV" },
+  multi_county: { requiredPlan: "pro" as const, label: "Multiple Counties", description: "Monitor up to 10 counties simultaneously" },
   realtime_alerts: { requiredPlan: "institutional" as const, label: "Real-time Alerts", description: "Instant notifications for new opportunities" },
-  bulk_export: { requiredPlan: "institutional" as const, label: "Bulk Export", description: "Export parcel data in bulk" },
+  bulk_export: { requiredPlan: "institutional" as const, label: "Bulk API Export", description: "Export parcel data via bulk API" },
   api_access: { requiredPlan: "institutional" as const, label: "API Access", description: "Programmatic access to parcel data" },
   custom_scoring: { requiredPlan: "institutional" as const, label: "Custom Scoring", description: "Custom scoring models for your criteria" },
   unlimited_counties: { requiredPlan: "institutional" as const, label: "Unlimited Counties", description: "Monitor unlimited counties" },
@@ -29,7 +30,7 @@ export function canAccessFeature(userPlan: Profile["plan"], feature: Feature): b
 export function getMaxCounties(plan: Profile["plan"]): number {
   switch (plan) {
     case "free": return 1;
-    case "pro": return 5;
+    case "pro": return 10;
     case "institutional": return Infinity;
   }
 }
@@ -37,7 +38,7 @@ export function getMaxCounties(plan: Profile["plan"]): number {
 export function getMaxAlerts(plan: Profile["plan"]): number {
   switch (plan) {
     case "free": return 1;
-    case "pro": return 5;
+    case "pro": return 10;
     case "institutional": return Infinity;
   }
 }

@@ -1,103 +1,84 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
 const plans = [
   {
-    name: "Free",
-    price: "$0",
-    period: "/forever",
-    description: "Get started with one county",
+    name: "Starter",
+    price: "$29",
+    period: "/month",
+    description: "For solo investors getting started",
+    trial: "3-day free trial",
     features: [
       "1 county scan",
       "Weekly email digest",
       "Basic opportunity scores",
       "Map view",
+      "10 AI summaries/mo",
     ],
-    cta: "Start Free",
-    href: "/auth/signup",
+    cta: "Start Free Trial",
+    href: "/auth/signup?plan=starter",
     highlight: false,
   },
   {
     name: "Pro",
-    price: "$49",
+    price: "$79",
     period: "/month",
-    description: "For active investors and developers",
+    description: "For active investors and dev shops",
+    trial: "3-day free trial",
     features: [
-      "5 county scans",
+      "10 county scans",
       "Daily email alerts",
-      "AI opportunity summaries",
+      "Unlimited AI summaries",
       "Permit history timeline",
       "Sales comps",
-      "Priority support",
+      "CSV export",
+      "Priority email support",
     ],
-    cta: "Start Pro Trial",
+    cta: "Start Free Trial",
     href: "/auth/signup?plan=pro",
     highlight: true,
   },
   {
-    name: "Institutional",
-    price: "$499",
+    name: "Enterprise",
+    price: "$349",
     period: "/month",
     description: "For firms and fund managers",
+    trial: "3-day free trial",
     features: [
       "Unlimited counties",
       "Real-time alerts",
-      "Full AI analysis",
+      "Unlimited AI analysis",
       "API access",
       "Custom scoring models",
-      "Dedicated account manager",
-      "Bulk export",
+      "CSV + bulk API export",
+      "Dedicated Slack support",
     ],
-    cta: "Contact Sales",
-    href: "/auth/signup?plan=institutional",
+    cta: "Start Free Trial",
+    href: "/auth/signup?plan=enterprise",
     highlight: false,
   },
 ];
 
 export default function PricingSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.05, rootMargin: "100px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="pricing" className="py-24 px-6" ref={ref}>
+    <section id="pricing" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 1, y: 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="font-editorial text-4xl md:text-5xl mb-4">
             Precision tools,{" "}
             <span className="text-copper">clear pricing</span>
           </h2>
           <p className="text-cream/60 max-w-lg mx-auto">
-            No hidden fees. Cancel anytime. Start with a free county scan.
+            3-day free trial on every plan. No credit card required. Cancel anytime.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((plan, i) => (
-            <motion.div
+          {plans.map((plan) => (
+            <div
               key={plan.name}
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
               className={`relative p-6 border ${
                 plan.highlight
                   ? "border-copper/40 bg-copper/5"
@@ -115,10 +96,12 @@ export default function PricingSection() {
                 <p className="text-cream/60 text-sm">{plan.description}</p>
               </div>
 
-              <div className="mb-6">
+              <div className="mb-2">
                 <span className="font-editorial text-4xl">{plan.price}</span>
                 <span className="text-cream/60 text-sm">{plan.period}</span>
               </div>
+
+              <p className="text-xs font-mono text-teal mb-6">{plan.trial}</p>
 
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature) => (
@@ -140,7 +123,7 @@ export default function PricingSection() {
                 {plan.cta}
                 <ArrowRight size={14} />
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
