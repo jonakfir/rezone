@@ -1,4 +1,3 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -8,24 +7,28 @@ export async function updateSession(request: NextRequest) {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // If Supabase is not configured, allow access (dev/demo mode)
-  if (!supabaseUrl || !supabaseKey || supabaseUrl.includes("placeholder")) {
+  if (!supabaseUrl || !supabaseKey || supabaseUrl.includes("placeholder") || supabaseKey.includes("placeholder")) {
     return response;
   }
 
   try {
+    const { createServerClient } = await import("@supabase/ssr");
+
     const supabase = createServerClient(supabaseUrl, supabaseKey, {
       cookies: {
         get(name: string) {
           return request.cookies.get(name)?.value;
         },
-        set(name: string, value: string, options: CookieOptions) {
+
+        set(name: string, value: string, options: any) {
           request.cookies.set({ name, value, ...options });
           response = NextResponse.next({
             request: { headers: request.headers },
           });
           response.cookies.set({ name, value, ...options });
         },
-        remove(name: string, options: CookieOptions) {
+
+        remove(name: string, options: any) {
           request.cookies.set({ name, value: "", ...options });
           response = NextResponse.next({
             request: { headers: request.headers },
@@ -48,7 +51,6 @@ export async function updateSession(request: NextRequest) {
     }
   } catch (error) {
     console.error("Middleware auth error:", error);
-    // On auth error, redirect to login for protected routes
     if (request.nextUrl.pathname.startsWith("/app")) {
       const url = request.nextUrl.clone();
       url.pathname = "/auth/login";
