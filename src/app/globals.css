@@ -2,118 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
-
 @layer base {
-  :root {
-    --cream: #FAF7F2;
-    --forest: #0A1F0F;
-    --forest-light: #132B17;
-    --copper: #E07B39;
-    --copper-light: #E8945A;
-    --teal: #00E5CC;
-    --teal-dark: #00B8A3;
+  html {
+    scroll-behavior: smooth;
   }
-
   body {
-    @apply antialiased;
-  }
-
-  ::selection {
-    background-color: rgba(224, 123, 57, 0.3);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-copper text-white px-6 py-3 font-semibold tracking-wide
-           hover:bg-copper-dark transition-all duration-200
-           active:scale-[0.98];
+    @apply bg-copper px-6 py-3 font-semibold tracking-wide text-white transition-all duration-200;
   }
-
+  .btn-primary:hover {
+    @apply bg-copper-dark;
+  }
+  .btn-primary:active {
+    @apply scale-[0.98];
+  }
   .btn-secondary {
-    @apply border border-copper/40 text-copper px-6 py-3 font-semibold tracking-wide
-           hover:bg-copper/10 transition-all duration-200;
+    @apply border border-copper/40 px-6 py-3 font-semibold tracking-wide text-copper transition-all duration-200;
   }
-
-  .btn-ghost {
-    @apply text-cream/70 px-4 py-2 hover:text-cream transition-colors;
+  .btn-secondary:hover {
+    @apply bg-copper/10;
   }
-
   .glass-panel {
-    @apply bg-forest-light/80 backdrop-blur-xl border border-white/5;
+    @apply bg-forest-light/80 backdrop-blur-2xl;
   }
-
-  .data-card {
-    @apply bg-forest-light border border-white/5 p-4;
-  }
-
-  .score-high {
-    @apply text-red-400;
-  }
-  .score-medium {
-    @apply text-yellow-400;
-  }
-  .score-low {
-    @apply text-green-400;
-  }
-}
-
-/* Mapbox overrides */
-.mapboxgl-popup-content {
-  background: #132B17 !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-  color: #FAF7F2 !important;
-  border-radius: 0 !important;
-  padding: 12px 16px !important;
-  font-family: 'IBM Plex Mono', monospace !important;
-  font-size: 12px !important;
-}
-
-.mapboxgl-popup-tip {
-  border-top-color: #132B17 !important;
-}
-
-.mapboxgl-ctrl-group {
-  border-radius: 0 !important;
-  background: #132B17 !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-.mapboxgl-ctrl-group button {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0A1F0F;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #132B17;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #1a3520;
-}
-
-/* Editorial New font-face (using fallback to Georgia if not available) */
-@font-face {
-  font-family: 'Editorial New';
-  src: local('Editorial New'), local('EditorialNew-Regular');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Editorial New';
-  src: local('Editorial New Bold'), local('EditorialNew-Bold');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
 }
